@@ -1,0 +1,21 @@
+{
+  "short_name": "King2Kill",
+  "name": "King2Kill - تطبيق الألغاز",
+  "icons": [
+    {
+      "src": "https://ui-avatars.com/api/?name=K2K&size=192&background=8b5cf6&color=fff&rounded=true",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://ui-avatars.com/api/?name=K2K&size=512&background=8b5cf6&color=fff&rounded=true",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#667eea",
+  "background_color": "#ffffff",
+  "description": "تطبيق ألغاز تفاعلي وممتع لاختبار معلوماتك في فئات مختلفة."
+}
