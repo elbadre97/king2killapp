@@ -11,8 +11,8 @@ interface State {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
-  // FIX: Use state class property instead of constructor to avoid potential TS errors.
-  state: State = {
+  // FIX: Switched to a class property for state initialization to resolve TS errors.
+  public state: State = {
     hasError: false,
     error: null,
     errorInfo: null,

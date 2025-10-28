@@ -560,11 +560,10 @@ const App: React.FC = () => {
     };
 
     const handleQuizStart = (category: QuizCategory) => {
-        // For "General Questions", open difficulty modal. For others, start directly.
         const questions = QUIZ_DATA[category];
         const hasDifficulty = questions.some(q => q.difficulty);
         
-        if (category === 'أسئلة عامة' && hasDifficulty) {
+        if (hasDifficulty) {
             setSelectedCategory(category);
             setDifficultyModalOpen(true);
         } else {
