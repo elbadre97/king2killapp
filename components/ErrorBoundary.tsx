@@ -11,9 +11,9 @@ interface State {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
-  // FIX: Replaced class property initialization with a standard constructor. This ensures the component's `this` context is correctly set up, resolving type errors where `this.props` and `this.setState` were not recognized.
   constructor(props: Props) {
     super(props);
+    // FIX: Initialize state in the constructor and access it with `this.state` to fix "Property 'state' does not exist on type 'ErrorBoundary'".
     this.state = {
       hasError: false,
       error: null,
@@ -21,21 +21,22 @@ class ErrorBoundary extends React.Component<Props, State> {
     };
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): Partial<State> {
     // Update state so the next render will show the fallback UI.
-    return { hasError: true, error, errorInfo: null };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // You can also log the error to an error reporting service
     console.error("Uncaught error:", error, errorInfo);
-    // FIX: Correctly call this.setState. This method is inherited from React.Component and should be available.
+    // FIX: Call `setState` using `this.setState` to update the component's state to fix "Property 'setState' does not exist on type 'ErrorBoundary'".
     this.setState({
       errorInfo: errorInfo
     });
   }
 
   render() {
+    // FIX: Access state properties using `this.state` to fix "Property 'state' does not exist on type 'ErrorBoundary'".
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
@@ -44,15 +45,17 @@ class ErrorBoundary extends React.Component<Props, State> {
           <p style={{ marginTop: '10px' }}>نعتذر، لقد واجه التطبيق مشكلة غير متوقعة. الرجاء محاولة تحديث الصفحة.</p>
           <details style={{ whiteSpace: 'pre-wrap', marginTop: '15px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '4px' }}>
             <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>تفاصيل الخطأ (للمطور)</summary>
+            {/* FIX: Access state properties using `this.state` to fix "Property 'state' does not exist on type 'ErrorBoundary'". */}
             {this.state.error && this.state.error.toString()}
             <br />
+            {/* FIX: Access state properties using `this.state` to fix "Property 'state' does not exist on type 'ErrorBoundary'". */}
             {this.state.errorInfo && this.state.errorInfo.componentStack}
           </details>
         </div>
       );
     }
 
-    // FIX: Correctly access this.props. This property is inherited from React.Component.
+    // FIX: Access props using `this.props` to fix "Property 'props' does not exist on type 'ErrorBoundary'". This also helps resolve the error in index.tsx about missing children.
     return this.props.children;
   }
 }

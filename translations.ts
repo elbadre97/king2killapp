@@ -51,7 +51,6 @@ export const translations = {
         memoryGame: 'لعبة الذاكرة',
         snakeGame: 'لعبة الثعبان',
         numberPuzzle: 'ألغاز ترتيب الأرقام',
-        tetris: 'تتريس',
     },
 
     // Home Page
@@ -129,17 +128,6 @@ export const translations = {
     numberPuzzleLevelMedium: 'متوسط 4x4',
     numberPuzzleLevelHard: 'صعب 5x5',
 
-    gameTetris: 'تتريس',
-    tetrisStartDesc: 'رتب القطع المتساقطة لتكوين صفوف كاملة!',
-    tetrisStartButton: 'ابدأ اللعب',
-    tetrisScore: 'النتيجة',
-    tetrisLines: 'الصفوف',
-    tetrisLevel: 'المستوى',
-    tetrisGameOver: 'انتهت اللعبة!',
-    tetrisYourScore: 'نتيجتك النهائية',
-    tetrisCollectPoints: 'اجمع النقاط',
-    tetrisDrop: 'إسقاط سريع',
-    
     // Difficulty Modal
     selectDifficulty: 'اختر مستوى الصعوبة',
     difficultyEasy: 'سهل',
@@ -516,7 +504,6 @@ export const translations = {
         memoryGame: 'Memory Game',
         snakeGame: 'Snake Game',
         numberPuzzle: 'Number Puzzle',
-        tetris: 'Tetris',
     },
 
     // Home Page
@@ -593,17 +580,6 @@ export const translations = {
     numberPuzzleLevelEasy: 'Easy 3x3',
     numberPuzzleLevelMedium: 'Medium 4x4',
     numberPuzzleLevelHard: 'Hard 5x5',
-
-    gameTetris: 'Tetris',
-    tetrisStartDesc: 'Arrange the falling blocks to form complete lines!',
-    tetrisStartButton: 'Start Playing',
-    tetrisScore: 'Score',
-    tetrisLines: 'Lines',
-    tetrisLevel: 'Level',
-    tetrisGameOver: 'Game Over!',
-    tetrisYourScore: 'Your final score',
-    tetrisCollectPoints: 'Collect Points',
-    tetrisDrop: 'Hard Drop',
     
     // Difficulty Modal
     selectDifficulty: 'Select Difficulty',
