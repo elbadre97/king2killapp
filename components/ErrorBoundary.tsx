@@ -11,13 +11,15 @@ interface State {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
-  // FIX: Using class property syntax for state initialization. The constructor
-  // approach seemed to have issues with the 'this' context in this environment.
-  state: State = {
-    hasError: false,
-    error: null,
-    errorInfo: null,
-  };
+  // FIX: Replaced class property initialization with a standard constructor. This ensures the component's `this` context is correctly set up, resolving type errors where `this.props` and `this.setState` were not recognized.
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      hasError: false,
+      error: null,
+      errorInfo: null,
+    };
+  }
 
   static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI.
@@ -27,6 +29,7 @@ class ErrorBoundary extends React.Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // You can also log the error to an error reporting service
     console.error("Uncaught error:", error, errorInfo);
+    // FIX: Correctly call this.setState. This method is inherited from React.Component and should be available.
     this.setState({
       errorInfo: errorInfo
     });
@@ -49,6 +52,7 @@ class ErrorBoundary extends React.Component<Props, State> {
       );
     }
 
+    // FIX: Correctly access this.props. This property is inherited from React.Component.
     return this.props.children;
   }
 }

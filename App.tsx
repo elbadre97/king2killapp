@@ -16,6 +16,7 @@ import PurchaseModal from './components/PurchaseModal';
 import TransferPointsModal from './components/TransferPointsModal';
 import DifficultyModal from './components/DifficultyModal';
 import ReferralPage from './components/ReferralPage';
+import InitialReferralModal from './components/InitialReferralModal';
 import { translations } from './translations';
 import { QUIZ_DATA } from './constants';
 import { AD_REWARD, MAX_ADS_PER_DAY, AD_COOLDOWN_SECONDS, REMOVE_ADS_COST } from './constants';
@@ -55,19 +56,25 @@ const getInitialPersistedState = () => {
     areAdsRemoved: false,
     referralCode: null as string | null,
     hasUsedReferral: false,
+    isFirstVisit: true,
   };
 
   try {
     const persistedStateJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (persistedStateJSON) {
-      // Merge persisted state with defaults to handle cases where new state properties are added
-      return { ...defaultState, ...JSON.parse(persistedStateJSON) };
+      const parsedState = JSON.parse(persistedStateJSON);
+      // For existing users before this feature, isFirstVisit will be undefined.
+      // Treat them as not first-time visitors.
+      if (typeof parsedState.isFirstVisit === 'undefined') {
+        parsedState.isFirstVisit = false;
+      }
+      return { ...defaultState, ...parsedState };
     }
   } catch (error) {
     console.error("Could not load state from localStorage", error);
   }
   
-  return defaultState;
+  return defaultState; // Only returns this if localStorage is empty
 };
 // --- End State Persistence ---
 
@@ -487,6 +494,7 @@ const App: React.FC = () => {
     const [areAdsRemoved, setAreAdsRemoved] = useState(initialState.areAdsRemoved);
     const [referralCode, setReferralCode] = useState(initialState.referralCode);
     const [hasUsedReferral, setHasUsedReferral] = useState(initialState.hasUsedReferral);
+    const [isFirstVisit, setIsFirstVisit] = useState(initialState.isFirstVisit);
 
     // Non-persisted state
     const [user, setUser] = useState<User>(null);
@@ -513,13 +521,14 @@ const App: React.FC = () => {
             areAdsRemoved,
             referralCode,
             hasUsedReferral,
+            isFirstVisit,
         };
         try {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToPersist));
         } catch (error) {
             console.error("Could not save state to localStorage", error);
         }
-    }, [userPoints, userLevel, language, theme, conversionHistory, userStats, adState, areAdsRemoved, referralCode, hasUsedReferral]);
+    }, [userPoints, userLevel, language, theme, conversionHistory, userStats, adState, areAdsRemoved, referralCode, hasUsedReferral, isFirstVisit]);
 
     // Effect to reset daily ad watch count if the day has changed since last load
     useEffect(() => {
@@ -705,6 +714,10 @@ const App: React.FC = () => {
         alert(t.referralSuccess);
         return true;
     };
+    
+    const handleCloseInitialReferral = () => {
+        setIsFirstVisit(false);
+    };
 
     useEffect(() => {
         document.documentElement.lang = language;
@@ -772,6 +785,12 @@ const App: React.FC = () => {
     return (
         <div className={`app-container bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen font-sans`}>
             {showAuthHelp && !user && <AuthHelpModal hostname={hostname} onClose={() => setShowAuthHelp(false)} />}
+            <InitialReferralModal 
+                isOpen={isFirstVisit} 
+                onClose={handleCloseInitialReferral} 
+                onApplyCode={handleApplyReferralCode} 
+                t={t} 
+            />
             <Header title={t.pageTitles[page] || 'King2Kill'} showBackButton={page !== 'home'} onBack={() => handleNavigate('home')} onMenuClick={() => setSidebarOpen(true)} t={t} language={language} />
             <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} onNavigate={handleNavigate} user={user} t={t} language={language} />
             <main className="pb-24 max-w-lg mx-auto">

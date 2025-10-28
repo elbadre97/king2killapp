@@ -259,6 +259,7 @@ export const translations = {
     referralAlreadyUsedTitle: 'لقد استخدمت رمزًا بالفعل',
     referralAlreadyUsedDesc: 'يمكن استخدام رمز دعوة مرة واحدة فقط.',
     referralShareMessage: (code: string) => `انضم إلي في تطبيق الألغاز King2Kill! استخدم الرمز الخاص بي ${code} عند البدء.`,
+    initialReferralSkip: 'تخطي',
 
     // Wallet Page
     walletTitle: 'المحفظة',
@@ -722,6 +723,7 @@ export const translations = {
     referralAlreadyUsedTitle: "You've Already Used a Code",
     referralAlreadyUsedDesc: 'A referral code can only be used once.',
     referralShareMessage: (code: string) => `Join me on the King2Kill quiz app! Use my code ${code} when you start.`,
+    initialReferralSkip: 'Skip',
 
     // Wallet Page
     walletTitle: 'Wallet',
