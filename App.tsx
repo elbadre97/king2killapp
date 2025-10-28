@@ -433,23 +433,20 @@ const VaultPage: React.FC<{ userPoints: number; userLevel: number; t: any; user:
 
 const App: React.FC = () => {
     const [page, setPage] = useState<Page>('home');
-    const [userPoints, setUserPoints] = useState(12500);
-    const [userLevel, setUserLevel] = useState(12);
+    const [userPoints, setUserPoints] = useState(0);
+    const [userLevel, setUserLevel] = useState(0);
     const [language, setLanguage] = useState<'ar' | 'en'>('ar');
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [conversionHistory, setConversionHistory] = useState<ConversionHistoryEntry[]>([]);
     const [userStats, setUserStats] = useState<UserStats>({
-        totalQuizzes: 15,
-        totalQuestions: 75,
-        correctAnswers: 60,
-        pointsFromQuizzes: 950,
-        performanceByCategory: {
-            'أسئلة عامة': { correct: 10, total: 15 },
-            'العلوم': { correct: 12, total: 15 },
-        }
+        totalQuizzes: 0,
+        totalQuestions: 0,
+        correctAnswers: 0,
+        pointsFromQuizzes: 0,
+        performanceByCategory: {}
     });
     const [user, setUser] = useState<User>(null);
-    const [adState, setAdState] = useState<AdState>({ watchedToday: 2, lastWatchTimestamp: null, lastResetDate: new Date().toISOString().split('T')[0] });
+    const [adState, setAdState] = useState<AdState>({ watchedToday: 0, lastWatchTimestamp: null, lastResetDate: new Date().toISOString().split('T')[0] });
     const [areAdsRemoved, setAreAdsRemoved] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [quizCategory, setQuizCategory] = useState<QuizCategory | null>(null);
