@@ -26,6 +26,8 @@ import TicTacToePage from './components/TicTacToePage';
 import MemoryGamePage from './components/MemoryGamePage';
 import SnakeGamePage from './components/SnakeGamePage';
 import NumberPuzzlePage from './components/NumberPuzzlePage';
+import DraughtsPage from './components/DraughtsPage';
+import ManyBricksBreakerPage from './components/ManyBricksBreakerPage';
 // FIX: Update firebase imports to use compat layer from firebase.ts
 import { auth, googleProvider, FirebaseUser } from './firebase';
 
@@ -205,6 +207,8 @@ const HomePage: React.FC<{
       memoryGame: 'bg-gradient-to-br from-fuchsia-500 to-purple-600',
       snakeGame: 'bg-gradient-to-br from-lime-500 to-green-600',
       numberPuzzle: 'bg-gradient-to-br from-red-500 to-orange-600',
+      draughts: 'bg-gradient-to-br from-red-600 to-gray-800',
+      manyBricksBreaker: 'bg-gradient-to-br from-stone-500 to-stone-700',
     };
 
     const quizCategories = (Object.keys(QUIZ_DATA) as QuizCategory[]);
@@ -214,6 +218,8 @@ const HomePage: React.FC<{
         { page: 'memoryGame' as Page, style: gameStyles.memoryGame, icon: '🧠', label: t.gameMemoryGame },
         { page: 'snakeGame' as Page, style: gameStyles.snakeGame, icon: '🐍', label: t.gameSnake },
         { page: 'numberPuzzle' as Page, style: gameStyles.numberPuzzle, icon: '🔢', label: t.gameNumberPuzzle },
+        { page: 'draughts' as Page, style: gameStyles.draughts, icon: '🔴', label: t.gameDraughts },
+        { page: 'manyBricksBreaker' as Page, style: gameStyles.manyBricksBreaker, icon: '🧱', label: t.gameManyBricksBreaker },
     ];
     
     const renderAdBlock = (key: string) => !areAdsRemoved ? (
@@ -764,6 +770,10 @@ const App: React.FC = () => {
                 return <SnakeGamePage onFinish={handleGameFinish} t={t} />;
             case 'numberPuzzle':
                 return <NumberPuzzlePage onFinish={handleGameFinish} t={t} />;
+            case 'draughts':
+                return <DraughtsPage onFinish={handleGameFinish} t={t} />;
+            case 'manyBricksBreaker':
+                return <ManyBricksBreakerPage onFinish={handleGameFinish} t={t} />;
             case 'about':
                 return <InfoPage title={t.pageTitles.about} sections={t.aboutContent} />;
             case 'contact':

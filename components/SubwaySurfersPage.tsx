@@ -15,7 +15,16 @@ const OBSTACLE_HEIGHT = 20;
 const COIN_RADIUS = 10;
 const LANE_WIDTH = CANVAS_WIDTH / 3;
 const PLAYER_Y_POSITION = CANVAS_HEIGHT - PLAYER_SIZE - 20;
-const GAME_SPEED = 4;
+const INITIAL_GAME_SPEED = 4;
+const MAX_GAME_SPEED = 8;
+const SPEED_INCREASE_RATE = 0.0005;
+
+// New vibrant colors
+const PLAYER_COLOR = '#3498db'; // Bright Blue
+const OBSTACLE_COLOR = '#e74c3c'; // Bright Red
+const COIN_COLOR = '#f1c40f'; // Bright Yellow
+const LANE_BG_COLOR = '#34495e';
+const LANE_LINE_COLOR = '#566573';
 
 const SubwaySurfersPage: React.FC<SubwaySurfersPageProps> = ({ onFinish, t }) => {
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'finished'>('idle');
@@ -27,6 +36,7 @@ const SubwaySurfersPage: React.FC<SubwaySurfersPageProps> = ({ onFinish, t }) =>
   const obstacles = useRef<{ y: number; lane: number; }[]>([]);
   const coins = useRef<{ y: number; lane: number; }[]>([]);
   const frameCount = useRef(0);
+  const gameSpeed = useRef(INITIAL_GAME_SPEED);
 
   const getLaneX = (lane: number) => lane * LANE_WIDTH + (LANE_WIDTH / 2);
 
@@ -44,6 +54,7 @@ const SubwaySurfersPage: React.FC<SubwaySurfersPageProps> = ({ onFinish, t }) =>
     coins.current = [];
     frameCount.current = 0;
     setScore(0);
+    gameSpeed.current = INITIAL_GAME_SPEED;
   }, []);
 
   const gameLoop = useCallback(() => {
@@ -52,14 +63,18 @@ const SubwaySurfersPage: React.FC<SubwaySurfersPageProps> = ({ onFinish, t }) =>
     if (!ctx || !canvas) return;
 
     frameCount.current++;
+    if (gameSpeed.current < MAX_GAME_SPEED) {
+      gameSpeed.current += SPEED_INCREASE_RATE;
+    }
 
     // Clear canvas
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // Draw background (lanes)
-    ctx.fillStyle = '#f0f0f0';
+    ctx.fillStyle = LANE_BG_COLOR;
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    ctx.strokeStyle = '#dcdcdc';
+    ctx.strokeStyle = LANE_LINE_COLOR;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(LANE_WIDTH, 0);
     ctx.lineTo(LANE_WIDTH, CANVAS_HEIGHT);
@@ -81,10 +96,10 @@ const SubwaySurfersPage: React.FC<SubwaySurfersPageProps> = ({ onFinish, t }) =>
     // Update and draw coins
     for (let i = coins.current.length - 1; i >= 0; i--) {
       const coin = coins.current[i];
-      coin.y += GAME_SPEED;
+      coin.y += gameSpeed.current;
       
       // Draw coin
-      ctx.fillStyle = '#ffd700'; // Gold color
+      ctx.fillStyle = COIN_COLOR;
       ctx.beginPath();
       ctx.arc(getLaneX(coin.lane), coin.y, COIN_RADIUS, 0, Math.PI * 2);
       ctx.fill();
@@ -106,10 +121,10 @@ const SubwaySurfersPage: React.FC<SubwaySurfersPageProps> = ({ onFinish, t }) =>
     // Update and draw obstacles
     for (let i = obstacles.current.length - 1; i >= 0; i--) {
         const obs = obstacles.current[i];
-        obs.y += GAME_SPEED;
+        obs.y += gameSpeed.current;
 
         // Draw obstacle
-        ctx.fillStyle = '#ef4444'; // Red color
+        ctx.fillStyle = OBSTACLE_COLOR;
         ctx.fillRect(getLaneX(obs.lane) - OBSTACLE_WIDTH / 2, obs.y, OBSTACLE_WIDTH, OBSTACLE_HEIGHT);
 
         // Check collision
@@ -125,7 +140,7 @@ const SubwaySurfersPage: React.FC<SubwaySurfersPageProps> = ({ onFinish, t }) =>
     }
 
     // Draw player
-    ctx.fillStyle = '#8b5cf6'; // Purple color
+    ctx.fillStyle = PLAYER_COLOR;
     const playerX = getLaneX(playerLane.current) - PLAYER_SIZE / 2;
     ctx.fillRect(playerX, PLAYER_Y_POSITION, PLAYER_SIZE, PLAYER_SIZE);
 

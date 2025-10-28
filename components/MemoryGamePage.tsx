@@ -63,7 +63,7 @@ const MemoryGamePage: React.FC<MemoryGamePageProps> = ({ onFinish, t }) => {
             )
           );
           setFlippedCards([]);
-        }, 1000);
+        }, 800);
       }
     }
   }, [flippedCards, cards]);
@@ -135,9 +135,9 @@ const MemoryGamePage: React.FC<MemoryGamePageProps> = ({ onFinish, t }) => {
                 <div key={card.id} className="w-16 h-16 sm:w-20 sm:h-20 perspective-1000" onClick={() => handleCardClick(card.id)}>
                   <div className={`w-full h-full relative transition-transform duration-500 transform-style-3d ${card.isFlipped || card.isMatched ? 'rotate-y-180' : ''}`}>
                     {/* Front */}
-                    <div className="absolute w-full h-full backface-hidden bg-blue-500 rounded-lg flex items-center justify-center text-3xl font-bold text-white cursor-pointer">?</div>
+                    <div className="absolute w-full h-full backface-hidden bg-gradient-to-br from-purple-600 to-indigo-700 rounded-lg flex items-center justify-center text-3xl font-bold text-white cursor-pointer">?</div>
                     {/* Back */}
-                    <div className={`absolute w-full h-full backface-hidden rotate-y-180 rounded-lg flex items-center justify-center text-3xl sm:text-4xl ${card.isMatched ? 'bg-green-400' : 'bg-green-200 dark:bg-gray-600'}`}>
+                    <div className={`absolute w-full h-full backface-hidden rotate-y-180 rounded-lg flex items-center justify-center text-3xl sm:text-4xl ${card.isMatched ? 'bg-yellow-400 ring-2 ring-yellow-200' : 'bg-gray-100 dark:bg-gray-600'}`}>
                       {card.icon}
                     </div>
                   </div>

@@ -18,8 +18,8 @@ const DIRECTIONS = {
   'ArrowLeft': { x: -1, y: 0 },
   'ArrowRight': { x: 1, y: 0 },
 };
-const GAME_SPEED_START = 150;
-const GAME_SPEED_INCREMENT = 5;
+const GAME_SPEED_START = 120;
+const GAME_SPEED_INCREMENT = 4;
 
 const SnakeGamePage: React.FC<SnakeGamePageProps> = ({ onFinish, t }) => {
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'finished'>('idle');
@@ -112,7 +112,7 @@ const SnakeGamePage: React.FC<SnakeGamePageProps> = ({ onFinish, t }) => {
         playSound('eat');
         setScore(prev => prev + 1);
         setFood(createFood(newSnake));
-        setSpeed(prev => Math.max(50, prev - GAME_SPEED_INCREMENT));
+        setSpeed(prev => Math.max(40, prev - GAME_SPEED_INCREMENT));
     } else {
         newSnake.pop();
     }
@@ -137,17 +137,31 @@ const SnakeGamePage: React.FC<SnakeGamePageProps> = ({ onFinish, t }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    // New background
+    ctx.fillStyle = '#1d2b3b'; // Dark blue
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    
+    // Draw grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    for(let i = 0; i < BOARD_SIZE; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * CELL_SIZE, 0);
+        ctx.lineTo(i * CELL_SIZE, CANVAS_SIZE);
+        ctx.moveTo(0, i * CELL_SIZE);
+        ctx.lineTo(CANVAS_SIZE, i * CELL_SIZE);
+        ctx.stroke();
+    }
 
     // Draw snake
-    ctx.fillStyle = 'hsl(260, 50%, 50%)'; // Purple
     snake.forEach((segment, index) => {
-        ctx.fillStyle = index === 0 ? 'hsl(260, 80%, 60%)' : 'hsl(260, 50%, 50%)';
+        ctx.fillStyle = index === 0 ? '#4ade80' : '#22c55e'; // Bright green head, slightly darker body
         ctx.fillRect(segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        ctx.strokeStyle = '#1d2b3b';
+        ctx.strokeRect(segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     });
 
     // Draw food
-    ctx.fillStyle = 'hsl(50, 100%, 50%)'; // Yellow
+    ctx.fillStyle = '#f43f5e'; // Bright red/rose
     ctx.fillRect(food.x * CELL_SIZE, food.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
   }, [snake, food]);

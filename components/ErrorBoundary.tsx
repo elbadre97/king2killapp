@@ -11,9 +11,9 @@ interface State {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
+  // FIX: Initialize state in the constructor to fix "Property 'state' does not exist on type 'ErrorBoundary'".
   constructor(props: Props) {
     super(props);
-    // FIX: Initialize state in the constructor and access it with `this.state` to fix "Property 'state' does not exist on type 'ErrorBoundary'".
     this.state = {
       hasError: false,
       error: null,
@@ -29,7 +29,7 @@ class ErrorBoundary extends React.Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // You can also log the error to an error reporting service
     console.error("Uncaught error:", error, errorInfo);
-    // FIX: Call `setState` using `this.setState` to update the component's state to fix "Property 'setState' does not exist on type 'ErrorBoundary'".
+    // FIX: Call `setState` using `this.setState` to fix "Property 'setState' does not exist on type 'ErrorBoundary'".
     this.setState({
       errorInfo: errorInfo
     });
