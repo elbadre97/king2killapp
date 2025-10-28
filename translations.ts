@@ -243,7 +243,7 @@ export const translations = {
 
     // Referral Page
     referralYourCodeTitle: 'رمز الدعوة الخاص بك',
-    referralYourCodeDesc: 'شارك هذا الرمز مع أصدقائك لتحصل على نقاط.',
+    referralYourCodeDesc: 'شارك هذا الرمز مع أصدقائك، وسيحصلون على مكافأة 20 نقطة!',
     referralCopy: 'نسخ',
     referralCopied: 'تم النسخ!',
     referralShare: 'مشاركة',
@@ -704,7 +704,7 @@ export const translations = {
     
     // Referral Page
     referralYourCodeTitle: 'Your Referral Code',
-    referralYourCodeDesc: 'Share this code with your friends to earn points.',
+    referralYourCodeDesc: 'Share this code with your friends and they will get a 20 point reward!',
     referralCopy: 'Copy',
     referralCopied: 'Copied!',
     referralShare: 'Share',
