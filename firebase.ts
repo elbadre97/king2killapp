@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// FIX: Use namespace import as named exports are not found.
-import * as authClient from "firebase/auth";
+// FIX: Use named imports for Firebase v9+ modular SDK. The namespace import was incorrect.
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,8 +17,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-export const auth = authClient.getAuth(app);
-export const googleProvider = new authClient.GoogleAuthProvider();
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
 
-// FIX: Export functions individually from the namespace import.
-export const { signInWithPopup, signOut, onAuthStateChanged } = authClient;
+// FIX: Export functions and types so they can be imported from this file.
+export { signInWithPopup, signOut, onAuthStateChanged };
+export type { User as FirebaseUser } from 'firebase/auth';

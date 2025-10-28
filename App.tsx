@@ -25,9 +25,48 @@ import MemoryGamePage from './components/MemoryGamePage';
 import SnakeGamePage from './components/SnakeGamePage';
 import NumberPuzzlePage from './components/NumberPuzzlePage';
 import TetrisPage from './components/TetrisPage';
-import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged } from './firebase';
-// FIX: Use namespace import as named exports are not found for types.
-import * as FirebaseAuth from 'firebase/auth';
+import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, FirebaseUser } from './firebase';
+// FIX: Use named import for FirebaseUser type from local firebase module.
+
+
+// --- State Persistence ---
+const LOCAL_STORAGE_KEY = 'king2kill_app_state';
+
+const getInitialPersistedState = () => {
+  const defaultState = {
+    userPoints: 0,
+    userLevel: 0,
+    language: 'ar' as 'ar' | 'en',
+    theme: 'light' as 'light' | 'dark',
+    conversionHistory: [] as ConversionHistoryEntry[],
+    userStats: {
+        totalQuizzes: 0,
+        totalQuestions: 0,
+        correctAnswers: 0,
+        pointsFromQuizzes: 0,
+        performanceByCategory: {}
+    } as UserStats,
+    adState: { 
+        watchedToday: 0, 
+        lastWatchTimestamp: null, 
+        lastResetDate: new Date().toISOString().split('T')[0] 
+    } as AdState,
+    areAdsRemoved: false,
+  };
+
+  try {
+    const persistedStateJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (persistedStateJSON) {
+      // Merge persisted state with defaults to handle cases where new state properties are added
+      return { ...defaultState, ...JSON.parse(persistedStateJSON) };
+    }
+  } catch (error) {
+    console.error("Could not load state from localStorage", error);
+  }
+  
+  return defaultState;
+};
+// --- End State Persistence ---
 
 
 const AuthHelpModal: React.FC<{ hostname: string; onClose: () => void; }> = ({ hostname, onClose }) => (
@@ -428,28 +467,60 @@ const VaultPage: React.FC<{ userPoints: number; userLevel: number; t: any; user:
 };
 
 const App: React.FC = () => {
+    // Use a single call to load initial state to avoid reading localStorage multiple times
+    const [initialState] = useState(getInitialPersistedState);
+
     const [page, setPage] = useState<Page>('home');
-    const [userPoints, setUserPoints] = useState(0);
-    const [userLevel, setUserLevel] = useState(0);
-    const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-    const [theme, setTheme] = useState<'light' | 'dark'>('light');
-    const [conversionHistory, setConversionHistory] = useState<ConversionHistoryEntry[]>([]);
-    const [userStats, setUserStats] = useState<UserStats>({
-        totalQuizzes: 0,
-        totalQuestions: 0,
-        correctAnswers: 0,
-        pointsFromQuizzes: 0,
-        performanceByCategory: {}
-    });
+    
+    // Initialize persisted state from the loaded initial state
+    const [userPoints, setUserPoints] = useState(initialState.userPoints);
+    const [userLevel, setUserLevel] = useState(initialState.userLevel);
+    const [language, setLanguage] = useState<'ar' | 'en'>(initialState.language);
+    const [theme, setTheme] = useState<'light' | 'dark'>(initialState.theme);
+    const [conversionHistory, setConversionHistory] = useState<ConversionHistoryEntry[]>(initialState.conversionHistory);
+    const [userStats, setUserStats] = useState<UserStats>(initialState.userStats);
+    const [adState, setAdState] = useState<AdState>(initialState.adState);
+    const [areAdsRemoved, setAreAdsRemoved] = useState(initialState.areAdsRemoved);
+
+    // Non-persisted state
     const [user, setUser] = useState<User>(null);
-    const [adState, setAdState] = useState<AdState>({ watchedToday: 0, lastWatchTimestamp: null, lastResetDate: new Date().toISOString().split('T')[0] });
-    const [areAdsRemoved, setAreAdsRemoved] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [quizCategory, setQuizCategory] = useState<QuizCategory | null>(null);
     const [eventType, setEventType] = useState<EventType>('weekly');
     const [isRewardedAdOpen, setRewardedAdOpen] = useState(false);
     const [showAuthHelp, setShowAuthHelp] = useState(false);
     const [hostname, setHostname] = useState('');
+
+    // Effect to save state to localStorage whenever a persisted value changes
+    useEffect(() => {
+        const stateToPersist = {
+            userPoints,
+            userLevel,
+            language,
+            theme,
+            conversionHistory,
+            userStats,
+            adState,
+            areAdsRemoved,
+        };
+        try {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToPersist));
+        } catch (error) {
+            console.error("Could not save state to localStorage", error);
+        }
+    }, [userPoints, userLevel, language, theme, conversionHistory, userStats, adState, areAdsRemoved]);
+
+    // Effect to reset daily ad watch count if the day has changed since last load
+    useEffect(() => {
+        const today = new Date().toISOString().split('T')[0];
+        if (adState.lastResetDate !== today) {
+            setAdState(prevState => ({
+                ...prevState,
+                watchedToday: 0,
+                lastResetDate: today,
+            }));
+        }
+    }, []); // Runs once on component mount
 
     useEffect(() => {
         const currentHostname = window.location.hostname;
@@ -460,7 +531,9 @@ const App: React.FC = () => {
     const t = translations[language];
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseAuth.User | null) => {
+        // FIX: The type `FirebaseAuth.User` was incorrect due to a faulty namespace import.
+        // Replaced with `FirebaseUser`, which is correctly imported from the local firebase module.
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
             if (firebaseUser) {
                 const { displayName, photoURL } = firebaseUser;
                 setUser({
