@@ -18,6 +18,8 @@ export const translations = {
     // Sidebar
     sidebarYoutube: 'يوتيوب',
     sidebarKick: 'كيك',
+    sidebarShareApp: 'مشاركة التطبيق',
+    sidebarShareText: 'جرّب تطبيق الألغاز King2Kill! إنه ممتع ومفيد.',
     sidebarAbout: 'من نحن',
     sidebarContact: 'اتصل بنا',
     sidebarPrivacy: 'سياسة الخصوصية',
@@ -481,6 +483,8 @@ export const translations = {
     // Sidebar
     sidebarYoutube: 'YouTube',
     sidebarKick: 'Kick',
+    sidebarShareApp: 'Share App',
+    sidebarShareText: 'Check out the King2Kill quiz app! It\'s fun and informative.',
     sidebarAbout: 'About Us',
     sidebarContact: 'Contact Us',
     sidebarPrivacy: 'Privacy Policy',

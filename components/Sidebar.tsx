@@ -16,6 +16,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, user, t,
     onClose();
   };
   
+  const handleGlobalShare = () => {
+    if (navigator.share) {
+        navigator.share({
+            title: 'King2Kill - تطبيق الألغاز',
+            text: t.sidebarShareText,
+            url: 'https://king2kill.netlify.app/',
+        }).catch(error => console.log('Error sharing app', error));
+    }
+  };
+
   const isRtl = language === 'ar';
   
   const sidebarPositionClass = isRtl ? 'right-0' : 'left-0';
@@ -67,6 +77,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigate, user, t,
                             <span>{t.sidebarKick}</span>
                         </a>
                     </li>
+                    {navigator.share && (
+                        <li>
+                            <button onClick={handleGlobalShare} className={`w-full flex items-center gap-4 p-3 rounded-lg hover:bg-purple-50 dark:hover:bg-gray-700 font-bold text-gray-700 dark:text-gray-200 transition-colors ${isRtl ? 'text-right' : 'text-left'}`}>
+                                <span className="text-2xl">🔗</span>
+                                <span>{t.sidebarShareApp}</span>
+                            </button>
+                        </li>
+                    )}
                 </ul>
             </div>
             <div>

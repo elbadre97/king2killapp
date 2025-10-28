@@ -22,7 +22,7 @@ const ReferralPage: React.FC<ReferralPageProps> = ({ referralCode, hasUsedReferr
             navigator.share({
                 title: 'King2Kill App',
                 text: t.referralShareMessage(referralCode),
-                url: window.location.href,
+                url: 'https://king2kill.netlify.app/',
             }).catch(error => console.log('Error sharing', error));
         }
     };
