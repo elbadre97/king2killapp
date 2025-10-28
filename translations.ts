@@ -52,7 +52,7 @@ export const translations = {
     },
 
     // Home Page
-    homeWelcome: 'مرحباً بك في King2Kill! 👑',
+    homeWelcome: 'مرحباً بك في King2Kill 👑',
     homeChooseCategory: 'اختر فئة الألغاز',
     homeStats: 'إحصائياتك',
     homeSolved: 'الألغاز المحلولة',
@@ -495,7 +495,7 @@ export const translations = {
     },
 
     // Home Page
-    homeWelcome: 'Welcome to King2Kill! 👑',
+    homeWelcome: 'Welcome to King2Kill 👑',
     homeChooseCategory: 'Choose a quiz category',
     homeStats: 'Your Stats',
     homeSolved: 'Puzzles Solved',
