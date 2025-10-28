@@ -1,4 +1,4 @@
-export type Page = 'home' | 'events' | 'store' | 'vault' | 'account' | 'wallet' | 'quiz' | 'points-conversion' | 'settings' | 'stats' | 'help' | 'about' | 'contact' | 'privacy' | 'terms' | 'leaderboard' | 'subwaySurfers' | 'ticTacToe' | 'memoryGame' | 'snakeGame' | 'numberPuzzle' | 'tetris';
+export type Page = 'home' | 'events' | 'store' | 'vault' | 'account' | 'wallet' | 'quiz' | 'points-conversion' | 'settings' | 'stats' | 'help' | 'about' | 'contact' | 'privacy' | 'terms' | 'leaderboard' | 'subwaySurfers' | 'ticTacToe' | 'memoryGame' | 'snakeGame' | 'numberPuzzle' | 'tetris' | 'referral';
 
 export type QuizCategory = 'أسئلة عامة' | 'العلوم' | 'التاريخ' | 'الرياضيات' | 'البرمجة' | 'الثقافة';
 export type QuizDifficulty = 'سهل' | 'متوسط' | 'صعب' | 'صعب جدا';

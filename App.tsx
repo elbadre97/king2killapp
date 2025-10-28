@@ -9,13 +9,13 @@ import HelpPage from './components/HelpPage';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import InfoPage from './components/InfoPage';
-import BannerAd from './components/BannerAd';
 import RewardedAdModal from './components/RewardedAdModal';
 import LeaderboardPage from './components/LeaderboardPage';
 import StorePage from './components/StorePage';
 import PurchaseModal from './components/PurchaseModal';
 import TransferPointsModal from './components/TransferPointsModal';
 import DifficultyModal from './components/DifficultyModal';
+import ReferralPage from './components/ReferralPage';
 import { translations } from './translations';
 import { QUIZ_DATA } from './constants';
 import { AD_REWARD, MAX_ADS_PER_DAY, AD_COOLDOWN_SECONDS, REMOVE_ADS_COST } from './constants';
@@ -53,6 +53,8 @@ const getInitialPersistedState = () => {
         lastResetDate: new Date().toISOString().split('T')[0] 
     } as AdState,
     areAdsRemoved: false,
+    referralCode: null as string | null,
+    hasUsedReferral: false,
   };
 
   try {
@@ -272,6 +274,7 @@ const HomePage: React.FC<{
 const AccountPage: React.FC<{ onNavigate: (page: Page) => void; user: User | null; onSignIn: () => void; onSignOut: () => void; t: any; hostname: string; }> = ({ onNavigate, user, onSignIn, onSignOut, t, hostname }) => {
     const accountItems = [
         { page: 'wallet' as Page, title: t.accountWallet, desc: t.accountWalletDesc, icon: '💳' },
+        { page: 'referral' as Page, title: t.accountReferral, desc: t.accountReferralDesc, icon: '🎁' },
         { page: 'settings' as Page, title: t.accountSettings, desc: t.accountSettingsDesc, icon: '⚙️' },
         { page: 'stats' as Page, title: t.accountStats, desc: t.accountStatsDesc, icon: '📊' },
         { page: 'help' as Page, title: t.accountHelp, desc: t.accountHelpDesc, icon: '❓' },
@@ -482,6 +485,8 @@ const App: React.FC = () => {
     const [userStats, setUserStats] = useState<UserStats>(initialState.userStats);
     const [adState, setAdState] = useState<AdState>(initialState.adState);
     const [areAdsRemoved, setAreAdsRemoved] = useState(initialState.areAdsRemoved);
+    const [referralCode, setReferralCode] = useState(initialState.referralCode);
+    const [hasUsedReferral, setHasUsedReferral] = useState(initialState.hasUsedReferral);
 
     // Non-persisted state
     const [user, setUser] = useState<User>(null);
@@ -506,13 +511,15 @@ const App: React.FC = () => {
             userStats,
             adState,
             areAdsRemoved,
+            referralCode,
+            hasUsedReferral,
         };
         try {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToPersist));
         } catch (error) {
             console.error("Could not save state to localStorage", error);
         }
-    }, [userPoints, userLevel, language, theme, conversionHistory, userStats, adState, areAdsRemoved]);
+    }, [userPoints, userLevel, language, theme, conversionHistory, userStats, adState, areAdsRemoved, referralCode, hasUsedReferral]);
 
     // Effect to reset daily ad watch count if the day has changed since last load
     useEffect(() => {
@@ -525,6 +532,14 @@ const App: React.FC = () => {
             }));
         }
     }, []); // Runs once on component mount
+    
+    // Effect to generate a referral code for a new user
+    useEffect(() => {
+        if (!referralCode) {
+            const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            setReferralCode(newCode);
+        }
+    }, [referralCode]);
 
     useEffect(() => {
         const currentHostname = window.location.hostname;
@@ -669,6 +684,27 @@ const App: React.FC = () => {
             setConversionHistory(h => [newEntry, ...h]);
         }
     };
+    
+    const handleApplyReferralCode = (code: string): boolean => {
+        if (hasUsedReferral) {
+            alert(t.referralAlreadyUsedDesc);
+            return false;
+        }
+        if (code === referralCode) {
+            alert(t.referralErrorOwnCode);
+            return false;
+        }
+        // Simple validation: 6 chars, alphanumeric. A real app would have a backend check.
+        if (!/^[A-Z0-9]{6}$/.test(code)) {
+            alert(t.referralErrorInvalidCode);
+            return false;
+        }
+        
+        setUserPoints(p => p + 20);
+        setHasUsedReferral(true);
+        alert(t.referralSuccess);
+        return true;
+    };
 
     useEffect(() => {
         document.documentElement.lang = language;
@@ -706,6 +742,8 @@ const App: React.FC = () => {
                 return <HelpPage t={t} />;
             case 'leaderboard':
                 return user ? <LeaderboardPage t={t} user={user} eventType={eventType} /> : <div>{t.accountSignInPrompt}</div>;
+            case 'referral':
+                return <ReferralPage referralCode={referralCode || ''} hasUsedReferral={hasUsedReferral} onApplyCode={handleApplyReferralCode} t={t} />;
             case 'subwaySurfers':
                 return <SubwaySurfersPage onFinish={handleGameFinish} t={t} />;
             case 'ticTacToe':
@@ -739,7 +777,6 @@ const App: React.FC = () => {
             <main className="pb-24 max-w-lg mx-auto">
                 {renderPage()}
             </main>
-            {!areAdsRemoved && page !== 'quiz' && <BannerAd t={t} />}
             <RewardedAdModal isOpen={isRewardedAdOpen} onClose={handleAdClosed} t={t} />
             <DifficultyModal 
                 isOpen={isDifficultyModalOpen}

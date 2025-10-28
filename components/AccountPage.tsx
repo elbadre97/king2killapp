@@ -4,6 +4,7 @@ import { Page, User } from '../types';
 const AccountPage: React.FC<{ onNavigate: (page: Page) => void; user: User | null; onSignIn: () => void; onSignOut: () => void; t: any; hostname: string; }> = ({ onNavigate, user, onSignIn, onSignOut, t, hostname }) => {
     const accountItems = [
         { page: 'wallet' as Page, title: t.accountWallet, desc: t.accountWalletDesc, icon: '💳' },
+        { page: 'referral' as Page, title: t.accountReferral, desc: t.accountReferralDesc, icon: '🎁' },
         { page: 'settings' as Page, title: t.accountSettings, desc: t.accountSettingsDesc, icon: '⚙️' },
         { page: 'stats' as Page, title: t.accountStats, desc: t.accountStatsDesc, icon: '📊' },
         { page: 'help' as Page, title: t.accountHelp, desc: t.accountHelpDesc, icon: '❓' },
