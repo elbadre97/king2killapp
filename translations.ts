@@ -137,6 +137,14 @@ export const translations = {
     tetrisCollectPoints: 'اجمع النقاط',
     tetrisDrop: 'إسقاط سريع',
     
+    // Difficulty Modal
+    selectDifficulty: 'اختر مستوى الصعوبة',
+    difficultyEasy: 'سهل',
+    difficultyMedium: 'متوسط',
+    difficultyHard: 'صعب',
+    difficultyVeryHard: 'صعب جداً',
+    questionsAvailable: (count: number) => `${count} سؤال`,
+    
 
     // Categories
     categories: {
@@ -148,7 +156,7 @@ export const translations = {
         'الثقافة': 'الثقافة'
     },
     categoryIcons: {
-        'أسئلة عامة': '❓', 
+        'أسئلة عامة': '🌍', 
         'العلوم': '🔬', 
         'التاريخ': '🏛️', 
         'الرياضيات': '🧮', 
@@ -280,6 +288,7 @@ export const translations = {
     quizResultTryAgainMsg: 'يمكنك التحسن في المرة القادمة',
     quizResultStats: (correct: number, total: number) => `${correct}/${total} إجابات صحيحة`,
     quizResultBack: 'العودة للرئيسية',
+    bonusPointsForAnswers: 'مكافأة الإجابات الصحيحة',
 
     // Settings Page
     settingsTitle: 'الإعدادات',
@@ -571,6 +580,14 @@ export const translations = {
     tetrisCollectPoints: 'Collect Points',
     tetrisDrop: 'Hard Drop',
     
+    // Difficulty Modal
+    selectDifficulty: 'Select Difficulty',
+    difficultyEasy: 'Easy',
+    difficultyMedium: 'Medium',
+    difficultyHard: 'Hard',
+    difficultyVeryHard: 'Very Hard',
+    questionsAvailable: (count: number) => `${count} questions`,
+
     // Categories
     categories: {
         'أسئلة عامة': 'General Questions', 
@@ -581,7 +598,7 @@ export const translations = {
         'الثقافة': 'Culture'
     },
     categoryIcons: {
-        'أسئلة عامة': '❓', 
+        'أسئلة عامة': '🌍', 
         'العلوم': '🔬', 
         'التاريخ': '🏛️', 
         'الرياضيات': '🧮', 
@@ -712,6 +729,7 @@ export const translations = {
     quizResultTryAgainMsg: 'You can improve next time',
     quizResultStats: (correct: number, total: number) => `${correct}/${total} correct answers`,
     quizResultBack: 'Back to Home',
+    bonusPointsForAnswers: 'Correct Answers Bonus',
 
     // Settings Page
     settingsTitle: 'Settings',

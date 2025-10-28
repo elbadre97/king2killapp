@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Page, QuizCategory, ConversionHistoryEntry, UserStats, User, AdState, EventType, StoreItem } from './types';
+import { Page, QuizCategory, ConversionHistoryEntry, UserStats, User, AdState, EventType, StoreItem, QuizDifficulty, QuizQuestion } from './types';
 import BottomNav from './components/BottomNav';
 import QuizPage from './components/QuizPage';
 import PointsConversionPage from './components/PointsConversionPage';
@@ -15,8 +15,9 @@ import LeaderboardPage from './components/LeaderboardPage';
 import StorePage from './components/StorePage';
 import PurchaseModal from './components/PurchaseModal';
 import TransferPointsModal from './components/TransferPointsModal';
+import DifficultyModal from './components/DifficultyModal';
 import { translations } from './translations';
-import { QUIZ_DATA, WEEKLY_LEADERBOARD_DATA } from './constants';
+import { QUIZ_DATA } from './constants';
 import { AD_REWARD, MAX_ADS_PER_DAY, AD_COOLDOWN_SECONDS, REMOVE_ADS_COST } from './constants';
 import { playSound } from './components/audio';
 import SubwaySurfersPage from './components/SubwaySurfersPage';
@@ -25,8 +26,8 @@ import MemoryGamePage from './components/MemoryGamePage';
 import SnakeGamePage from './components/SnakeGamePage';
 import NumberPuzzlePage from './components/NumberPuzzlePage';
 import TetrisPage from './components/TetrisPage';
-import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, FirebaseUser } from './firebase';
-// FIX: Use named import for FirebaseUser type from local firebase module.
+// FIX: Update firebase imports to use compat layer from firebase.ts
+import { auth, googleProvider, FirebaseUser } from './firebase';
 
 
 // --- State Persistence ---
@@ -486,10 +487,13 @@ const App: React.FC = () => {
     const [user, setUser] = useState<User>(null);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [quizCategory, setQuizCategory] = useState<QuizCategory | null>(null);
+    const [quizDifficulty, setQuizDifficulty] = useState<QuizDifficulty | null>(null);
     const [eventType, setEventType] = useState<EventType>('weekly');
     const [isRewardedAdOpen, setRewardedAdOpen] = useState(false);
     const [showAuthHelp, setShowAuthHelp] = useState(false);
     const [hostname, setHostname] = useState('');
+    const [isDifficultyModalOpen, setDifficultyModalOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<QuizCategory | null>(null);
 
     // Effect to save state to localStorage whenever a persisted value changes
     useEffect(() => {
@@ -531,9 +535,8 @@ const App: React.FC = () => {
     const t = translations[language];
 
     useEffect(() => {
-        // FIX: The type `FirebaseAuth.User` was incorrect due to a faulty namespace import.
-        // Replaced with `FirebaseUser`, which is correctly imported from the local firebase module.
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+        // FIX: Use compat version of onAuthStateChanged
+        const unsubscribe = auth.onAuthStateChanged((firebaseUser: FirebaseUser | null) => {
             if (firebaseUser) {
                 const { displayName, photoURL } = firebaseUser;
                 setUser({
@@ -557,12 +560,31 @@ const App: React.FC = () => {
     };
 
     const handleQuizStart = (category: QuizCategory) => {
-        setQuizCategory(category);
-        setPage('quiz');
+        // For "General Questions", open difficulty modal. For others, start directly.
+        const questions = QUIZ_DATA[category];
+        const hasDifficulty = questions.some(q => q.difficulty);
+        
+        if (category === 'أسئلة عامة' && hasDifficulty) {
+            setSelectedCategory(category);
+            setDifficultyModalOpen(true);
+        } else {
+            setQuizCategory(category);
+            setQuizDifficulty(null); // No difficulty for other categories
+            setPage('quiz');
+        }
     }
 
-    const handleQuizFinish = (points: number, correct: number, total: number) => {
-        setUserPoints(p => p + points);
+    const handleDifficultySelect = (difficulty: QuizDifficulty) => {
+        if (selectedCategory) {
+            setQuizCategory(selectedCategory);
+            setQuizDifficulty(difficulty);
+            setPage('quiz');
+            setDifficultyModalOpen(false);
+        }
+    };
+
+    const handleQuizFinish = (points: number, bonus: number, correct: number, total: number) => {
+        setUserPoints(p => p + points + bonus);
         setUserStats(s => ({
             ...s,
             totalQuizzes: s.totalQuizzes + 1,
@@ -619,7 +641,8 @@ const App: React.FC = () => {
     };
     const handleSignIn = async () => {
         try {
-            await signInWithPopup(auth, googleProvider);
+            // FIX: Use compat version of signInWithPopup
+            await auth.signInWithPopup(googleProvider);
         } catch (error: any) {
             console.error("Error signing in with Google: ", error);
             if (error.code === 'auth/unauthorized-domain') {
@@ -629,7 +652,8 @@ const App: React.FC = () => {
     };
     const handleSignOut = async () => {
         try {
-            await signOut(auth);
+            // FIX: Use compat version of signOut
+            await auth.signOut();
         } catch (error) {
             console.error("Error signing out: ", error);
         }
@@ -672,7 +696,7 @@ const App: React.FC = () => {
             case 'wallet':
                 return <WalletPage userPoints={userPoints} onNavigate={handleNavigate} t={t} />;
             case 'quiz':
-                return quizCategory ? <QuizPage category={quizCategory} onFinish={handleQuizFinish} t={t} /> : <div>{t.quizNoQuestions}</div>;
+                return quizCategory ? <QuizPage category={quizCategory} difficulty={quizDifficulty} onFinish={handleQuizFinish} t={t} userStats={userStats} /> : <div>{t.quizNoQuestions}</div>;
             case 'points-conversion':
                 return <PointsConversionPage userPoints={userPoints} userLevel={userLevel} onConfirmConversion={handleConfirmConversion} history={conversionHistory} t={t} />;
             case 'settings':
@@ -718,6 +742,14 @@ const App: React.FC = () => {
             </main>
             {!areAdsRemoved && page !== 'quiz' && <BannerAd t={t} />}
             <RewardedAdModal isOpen={isRewardedAdOpen} onClose={handleAdClosed} t={t} />
+            <DifficultyModal 
+                isOpen={isDifficultyModalOpen}
+                onClose={() => setDifficultyModalOpen(false)}
+                onSelect={handleDifficultySelect}
+                category={selectedCategory}
+                questions={selectedCategory ? QUIZ_DATA[selectedCategory] : []}
+                t={t}
+            />
             <BottomNav currentPage={page} onNavigate={handleNavigate} userPoints={userPoints} t={t} />
         </div>
     );

@@ -1,16 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { QuizCategory } from '../types';
+import { QuizCategory, UserStats, QuizDifficulty } from '../types';
 import { QUIZ_DATA } from '../constants';
 import { playSound } from './audio';
 
 interface QuizPageProps {
   category: QuizCategory;
-  onFinish: (pointsEarned: number, correctAnswers: number, totalQuestions: number) => void;
+  difficulty: QuizDifficulty | null;
+  onFinish: (pointsEarned: number, bonusPoints: number, correctAnswers: number, totalQuestions: number) => void;
   t: any;
+  userStats: UserStats;
 }
 
-const QuizPage: React.FC<QuizPageProps> = ({ category, onFinish, t }) => {
-  const [questions, setQuestions] = useState(QUIZ_DATA[category] || []);
+const QuizPage: React.FC<QuizPageProps> = ({ category, difficulty, onFinish, t, userStats }) => {
+  const [questions, setQuestions] = useState(() => {
+    const allQuestions = QUIZ_DATA[category] || [];
+    if (difficulty) {
+        return allQuestions.filter(q => q.difficulty === difficulty);
+    }
+    return allQuestions;
+  });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
@@ -70,26 +78,27 @@ const QuizPage: React.FC<QuizPageProps> = ({ category, onFinish, t }) => {
   };
 
   const calculateResults = () => {
-    const pointsPerCorrectAnswer = questions[0]?.points || 10;
-    let bonusPoints = 0;
+    const totalPointsEarned = correctAnswersCount; // 1 point per correct answer
+
+    // Keep the messages for user feedback
     let title = t.quizResultTryAgain;
     let message = t.quizResultTryAgainMsg;
 
     if (correctAnswersCount === questions.length) {
-        bonusPoints = 50;
-        title = t.quizResultExcellent;
-        message = t.quizResultExcellentMsg;
+      title = t.quizResultExcellent;
+      message = t.quizResultExcellentMsg;
     } else if (correctAnswersCount >= Math.ceil(questions.length * 0.6)) {
-        bonusPoints = 30;
-        title = t.quizResultGood;
-        message = t.quizResultGoodMsg;
-    } else {
-        bonusPoints = 10;
+      title = t.quizResultGood;
+      message = t.quizResultGoodMsg;
     }
     
-    const totalPoints = (correctAnswersCount * pointsPerCorrectAnswer) + bonusPoints;
+    // The total points are just the number of correct answers.
+    const totalPoints = totalPointsEarned;
     
-    return { totalPoints, title, message };
+    // The ten-answer bonus is disabled.
+    const tenAnswerBonus = 0;
+
+    return { totalPoints, title, message, tenAnswerBonus };
   };
 
   useEffect(() => {
@@ -104,7 +113,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ category, onFinish, t }) => {
   }, [isFinished, soundPlayedForFinish, correctAnswersCount, questions.length]);
 
   if (isFinished) {
-    const { totalPoints, title, message } = calculateResults();
+    const { totalPoints, title, message, tenAnswerBonus } = calculateResults();
     
     return (
       <div className="p-4">
@@ -112,9 +121,14 @@ const QuizPage: React.FC<QuizPageProps> = ({ category, onFinish, t }) => {
           <h2 className="text-xl font-bold mb-2">{title}</h2>
           <p className="mb-4">{message}</p>
           <div className="text-3xl font-bold mb-2">+{totalPoints} ⭐</div>
+          {tenAnswerBonus > 0 && (
+            <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-bold shadow-lg my-2 inline-block">
+              🎁 +{tenAnswerBonus} {t.bonusPointsForAnswers}
+            </div>
+          )}
           <p className="text-sm mb-4">{t.quizResultStats(correctAnswersCount, questions.length)}</p>
           <button 
-            onClick={() => onFinish(totalPoints, correctAnswersCount, questions.length)}
+            onClick={() => onFinish(totalPoints, tenAnswerBonus, correctAnswersCount, questions.length)}
             className="bg-white text-purple-500 px-6 py-2 rounded-full font-bold">
             {t.quizResultBack}
           </button>
@@ -137,7 +151,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ category, onFinish, t }) => {
       <div className="bg-white dark:bg-gray-700 rounded-2xl p-4 shadow-lg mb-4">
         <div className="flex justify-between items-center mb-4">
           <div className="bg-purple-100 dark:bg-gray-600 px-3 py-1 rounded-full text-purple-600 dark:text-purple-300 font-bold">{t.quizQuestionOf(currentQuestionIndex + 1, questions.length)}</div>
-          <div className="bg-green-100 dark:bg-gray-600 px-3 py-1 rounded-full text-green-600 dark:text-green-300 font-bold">⭐ +{currentQuestion.points}</div>
+          <div className="bg-green-100 dark:bg-gray-600 px-3 py-1 rounded-full text-green-600 dark:text-green-300 font-bold">⭐ +1</div>
         </div>
         
         <div className="mb-6">
