@@ -11,9 +11,9 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  // Fix: Initializing state as a class property to resolve type errors where 
-  // 'this.state' and 'this.props' were not being recognized.
-  state: State = {
+  // Fix: Initialize state directly as a class property to ensure `this` is
+  // correctly bound and that props and state are available.
+  public state: State = {
     hasError: false,
     error: null,
     errorInfo: null,
