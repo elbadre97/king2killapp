@@ -11,24 +11,31 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
+  // Fix: Replaced constructor with a state property initializer.
+  // This is a more modern class field syntax and can prevent some tooling issues
+  // that might be causing the reported errors about 'state' and 'props' not existing.
   state: State = {
     hasError: false,
     error: null,
     errorInfo: null,
   };
 
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error, errorInfo: null };
+  static getDerivedStateFromError(error: Error): Partial<State> {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // You can also log the error to an error reporting service
     console.error("Uncaught error:", error, errorInfo);
-    // FIX: Corrected access to setState, which is a method on the component instance.
-    this.setState({ errorInfo: errorInfo });
+    this.setState({
+      errorInfo: errorInfo
+    });
   }
 
   render() {
     if (this.state.hasError) {
+      // You can render any custom fallback UI
       return (
         <div style={{ padding: '20px', margin: '20px', border: '2px solid red', borderRadius: '8px', backgroundColor: '#fff0f0', color: '#333', direction: 'rtl', textAlign: 'right' }}>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>حدث خطأ ما.</h1>
@@ -43,7 +50,6 @@ class ErrorBoundary extends Component<Props, State> {
       );
     }
 
-    // FIX: Corrected access to props, which is a property on the component instance.
     return this.props.children;
   }
 }
