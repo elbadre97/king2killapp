@@ -28,6 +28,7 @@ import SnakeGamePage from './components/SnakeGamePage';
 import NumberPuzzlePage from './components/NumberPuzzlePage';
 import DraughtsPage from './components/DraughtsPage';
 import ManyBricksBreakerPage from './components/ManyBricksBreakerPage';
+import ChatPage from './components/ChatPage';
 // FIX: Update firebase imports to use compat layer from firebase.ts
 import { auth, googleProvider, FirebaseUser } from './firebase';
 
@@ -284,6 +285,7 @@ const HomePage: React.FC<{
 const AccountPage: React.FC<{ onNavigate: (page: Page) => void; user: User | null; onSignIn: () => void; onSignOut: () => void; t: any; hostname: string; }> = ({ onNavigate, user, onSignIn, onSignOut, t, hostname }) => {
     const accountItems = [
         { page: 'wallet' as Page, title: t.accountWallet, desc: t.accountWalletDesc, icon: '💳' },
+        { page: 'vault' as Page, title: t.pageTitles.vault, desc: t.accountVaultDesc, icon: '💰' },
         { page: 'referral' as Page, title: t.accountReferral, desc: t.accountReferralDesc, icon: '🎁' },
         { page: 'settings' as Page, title: t.accountSettings, desc: t.accountSettingsDesc, icon: '⚙️' },
         { page: 'stats' as Page, title: t.accountStats, desc: t.accountStatsDesc, icon: '📊' },
@@ -565,8 +567,9 @@ const App: React.FC = () => {
         // FIX: Use compat version of onAuthStateChanged
         const unsubscribe = auth.onAuthStateChanged((firebaseUser: FirebaseUser | null) => {
             if (firebaseUser) {
-                const { displayName, photoURL } = firebaseUser;
+                const { uid, displayName, photoURL } = firebaseUser;
                 setUser({
+                    uid,
                     name: displayName || 'User',
                     picture: photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName || 'K')}&background=8b5cf6&color=fff&size=128`
                 });
@@ -742,6 +745,8 @@ const App: React.FC = () => {
                 return <StorePage userPoints={userPoints} t={t} onPurchase={handlePurchase} />;
             case 'vault':
                 return <VaultPage userPoints={userPoints} userLevel={userLevel} t={t} user={user} />;
+            case 'chat':
+                return <ChatPage user={user} t={t} />;
             case 'account':
                 return <AccountPage onNavigate={handleNavigate} user={user} onSignIn={handleSignIn} onSignOut={handleSignOut} t={t} hostname={hostname} />;
             case 'wallet':

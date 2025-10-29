@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+import "firebase/compat/firestore";
+
 // FIX: The User type from 'firebase/auth' is for the v9 modular SDK. It is not available in compat mode.
 
 // Your web app's Firebase configuration
@@ -21,6 +23,8 @@ if (firebase.apps.length === 0) {
 
 export const auth = firebase.auth();
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
+export const firestore = firebase.firestore();
+export const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp;
 
 // The User type is now available on the firebase object.
 // FIX: The correct user type for the compat library is `firebase.User`.

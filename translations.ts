@@ -1,4 +1,5 @@
 
+
 export const translations = {
   ar: {
     // General
@@ -35,13 +36,14 @@ export const translations = {
       draughts: 'لعبة الضامة',
       referral: 'الدعوات',
       manyBricksBreaker: 'كسر الطوب',
+      chat: 'الدردشة العامة',
     },
 
     // Bottom Nav
     navHome: 'الرئيسية',
     navEvents: 'الفعاليات',
     navStore: 'المتجر',
-    navVault: 'الخزنة',
+    navChat: 'الدردشة',
     navAccount: 'الحساب',
     
     // Home Page
@@ -112,6 +114,7 @@ export const translations = {
     accountSignOut: 'خروج',
     accountWallet: 'المحفظة',
     accountWalletDesc: 'عرض رصيدك وتحويل النقاط.',
+    accountVaultDesc: 'عرض إنجازاتك وتقدمك في المستوى.',
     accountReferral: 'الدعوات والمكافآت',
     accountReferralDesc: 'ادعُ أصدقاءك واكسبوا معًا.',
     accountSettings: 'الإعدادات',
@@ -274,6 +277,10 @@ export const translations = {
     // Initial Referral Modal
     initialReferralSkip: 'تخطي في الوقت الحالي',
     
+    // Chat Page
+    chatPlaceholder: 'اكتب رسالتك...',
+    chatSignInPrompt: 'الرجاء تسجيل الدخول للدردشة.',
+    
     // Subway Surfers Game
     subwayScore: 'النتيجة',
     subwayInstructions: 'استخدم الأسهم للتحرك',
@@ -395,13 +402,14 @@ export const translations = {
       draughts: 'Draughts Game',
       referral: 'Referrals',
       manyBricksBreaker: 'Brick Breaker',
+      chat: 'Public Chat',
     },
 
     // Bottom Nav
     navHome: 'Home',
     navEvents: 'Events',
     navStore: 'Store',
-    navVault: 'Vault',
+    navChat: 'Chat',
     navAccount: 'Account',
     
     // Home Page
@@ -472,6 +480,7 @@ export const translations = {
     accountSignOut: 'Sign Out',
     accountWallet: 'Wallet',
     accountWalletDesc: 'View your balance and transfer points.',
+    accountVaultDesc: 'View your achievements and level progress.',
     accountReferral: 'Referrals & Rewards',
     accountReferralDesc: 'Invite friends and earn together.',
     accountSettings: 'Settings',
@@ -633,6 +642,10 @@ export const translations = {
 
     // Initial Referral Modal
     initialReferralSkip: 'Skip for now',
+
+    // Chat Page
+    chatPlaceholder: 'Type your message...',
+    chatSignInPrompt: 'Please sign in to chat.',
 
     // Subway Surfers Game
     subwayScore: 'Score',

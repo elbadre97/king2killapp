@@ -35,8 +35,8 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentPage, onNavigate, userPoin
   const navItems = [
     { page: 'home' as Page, label: t.navHome, icon: '🏠' },
     { page: 'events' as Page, label: t.navEvents, icon: '🎯' },
+    { page: 'chat' as Page, label: t.navChat, icon: '💬' },
     { page: 'store' as Page, label: t.navStore, icon: '🛍️' },
-    { page: 'vault' as Page, label: t.navVault, icon: '💰' },
     { page: 'account' as Page, label: t.navAccount, icon: '👤' },
   ];
 
