@@ -32,7 +32,7 @@ import ChatPage from './components/ChatPage';
 // FIX: Import AccountPage component.
 import AccountPage from './components/AccountPage';
 // FIX: Update firebase imports to use compat layer from firebase.ts
-import { auth, googleProvider, FirebaseUser } from './firebase';
+import { auth, googleProvider, FirebaseUser, firestore } from './firebase';
 
 
 // --- State Persistence ---
@@ -518,15 +518,19 @@ const App: React.FC = () => {
     const t = translations[language];
 
     useEffect(() => {
-        // FIX: Use compat version of onAuthStateChanged
-        const unsubscribe = auth.onAuthStateChanged((firebaseUser: FirebaseUser | null) => {
+        const unsubscribe = auth.onAuthStateChanged(async (firebaseUser: FirebaseUser | null) => {
             if (firebaseUser) {
+                // Check if user is banned
+                const banDoc = await firestore.collection('bannedUsers').doc(firebaseUser.uid).get();
+                const isBanned = banDoc.exists;
+
                 const { uid, displayName, photoURL, email } = firebaseUser;
                 setUser({
                     uid,
                     name: displayName || 'User',
                     picture: photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName || 'K')}&background=8b5cf6&color=fff&size=128`,
                     isAdmin: email === ADMIN_EMAIL,
+                    isBanned,
                 });
                 setShowAuthHelp(false); // Hide help modal on successful login
             } else {

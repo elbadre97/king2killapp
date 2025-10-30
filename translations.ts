@@ -9,6 +9,8 @@ export const translations = {
     adLabel: 'إعلان',
     dir: 'rtl',
     language: 'ar',
+    confirm: 'تأكيد',
+    cancel: 'إلغاء',
     
     // Page Titles
     pageTitles: {
@@ -283,6 +285,9 @@ export const translations = {
     chatSignInPrompt: 'الرجاء تسجيل الدخول للدردشة.',
     chatDeleteMessagePrompt: 'هل أنت متأكد أنك تريد حذف هذه الرسالة؟',
     chatDeleteMessageTitle: 'حذف الرسالة',
+    chatBanUserTitle: 'حظر المستخدم',
+    chatBanUserPrompt: (name: string) => `هل أنت متأكد أنك تريد حظر ${name}؟`,
+    chatBannedMessage: 'لقد تم حظرك من الدردشة.',
     
     // Subway Surfers Game
     subwayScore: 'النتيجة',
@@ -378,6 +383,8 @@ export const translations = {
     adLabel: 'Advertisement',
     dir: 'ltr',
     language: 'en',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
     
     // Page Titles
     pageTitles: {
@@ -652,6 +659,9 @@ export const translations = {
     chatSignInPrompt: 'Please sign in to chat.',
     chatDeleteMessagePrompt: 'Are you sure you want to delete this message?',
     chatDeleteMessageTitle: 'Delete Message',
+    chatBanUserTitle: 'Ban User',
+    chatBanUserPrompt: (name: string) => `Are you sure you want to ban ${name}?`,
+    chatBannedMessage: 'You have been banned from chatting.',
 
     // Subway Surfers Game
     subwayScore: 'Score',

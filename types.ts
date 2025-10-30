@@ -42,6 +42,7 @@ export type User = {
   name: string;
   picture: string; // URL to picture
   isAdmin?: boolean;
+  isBanned?: boolean;
 } | null;
 
 export interface AdState {
