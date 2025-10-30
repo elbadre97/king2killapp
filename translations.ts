@@ -123,6 +123,7 @@ export const translations = {
     accountStatsDesc: 'تتبع أدائك وتقدمك.',
     accountHelp: 'المساعدة',
     accountHelpDesc: 'ابحث عن إجابات لأسئلتك.',
+    accountAdminBadge: 'مشرف',
     
     // Wallet Page
     walletBalance: 'رصيدك الحالي',
@@ -280,6 +281,8 @@ export const translations = {
     // Chat Page
     chatPlaceholder: 'اكتب رسالتك...',
     chatSignInPrompt: 'الرجاء تسجيل الدخول للدردشة.',
+    chatDeleteMessagePrompt: 'هل أنت متأكد أنك تريد حذف هذه الرسالة؟',
+    chatDeleteMessageTitle: 'حذف الرسالة',
     
     // Subway Surfers Game
     subwayScore: 'النتيجة',
@@ -489,6 +492,7 @@ export const translations = {
     accountStatsDesc: 'Track your performance and progress.',
     accountHelp: 'Help',
     accountHelpDesc: 'Find answers to your questions.',
+    accountAdminBadge: 'Admin',
 
     // Wallet Page
     walletBalance: 'Your Balance',
@@ -646,6 +650,8 @@ export const translations = {
     // Chat Page
     chatPlaceholder: 'Type your message...',
     chatSignInPrompt: 'Please sign in to chat.',
+    chatDeleteMessagePrompt: 'Are you sure you want to delete this message?',
+    chatDeleteMessageTitle: 'Delete Message',
 
     // Subway Surfers Game
     subwayScore: 'Score',

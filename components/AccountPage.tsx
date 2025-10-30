@@ -18,7 +18,14 @@ const AccountPage: React.FC<{ onNavigate: (page: Page) => void; user: User | nul
                     <>
                         <img src={user.picture} alt={user.name} className="w-16 h-16 rounded-full border-4 border-purple-300" />
                         <div className="mx-4 flex-1">
-                            <h2 className="font-bold text-lg text-gray-800 dark:text-gray-200">{user.name}</h2>
+                            <div className="flex items-center gap-2">
+                                <h2 className="font-bold text-lg text-gray-800 dark:text-gray-200">{user.name}</h2>
+                                {user.isAdmin && (
+                                    <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                        {t.accountAdminBadge}
+                                    </span>
+                                )}
+                            </div>
                             <span className="text-sm text-gray-500 dark:text-gray-400">{t.accountUsername}</span>
                         </div>
                         <button onClick={onSignOut} className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">{t.accountSignOut}</button>

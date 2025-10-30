@@ -28,7 +28,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ user, t }) => {
   useEffect(scrollToBottom, [messages]);
 
   useEffect(() => {
-    // Query the last 50 messages, ordered by timestamp
     const q = firestore.collection('chats').orderBy('timestamp', 'asc').limitToLast(50);
 
     const unsubscribe = q.onSnapshot(querySnapshot => {
@@ -65,6 +64,19 @@ const ChatPage: React.FC<ChatPageProps> = ({ user, t }) => {
     setNewMessage('');
   };
 
+  const handleDeleteMessage = async (messageId: string) => {
+    if (!user?.isAdmin) return;
+    
+    if (window.confirm(t.chatDeleteMessagePrompt)) {
+      try {
+        await firestore.collection('chats').doc(messageId).delete();
+      } catch (error) {
+        console.error("Error deleting message: ", error);
+        alert('Failed to delete message.');
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-144px)] sm:h-[calc(100vh-112px)]">
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -74,16 +86,30 @@ const ChatPage: React.FC<ChatPageProps> = ({ user, t }) => {
           const timeString = date 
             ? date.toLocaleTimeString(t.language === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' }) 
             : '...';
+            
+          const DeleteButton = () => (
+            <button 
+              onClick={() => handleDeleteMessage(msg.id)}
+              className="text-gray-400 hover:text-red-500 self-center opacity-0 group-hover:opacity-100 transition-opacity"
+              title={t.chatDeleteMessageTitle}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clipRule="evenodd" />
+              </svg>
+            </button>
+          );
 
           return (
-            <div key={msg.id} className={`flex items-end gap-3 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-              {!isCurrentUser && <img src={msg.picture} alt={msg.name} className="w-8 h-8 rounded-full" />}
-              <div className={`max-w-xs md:max-w-md p-3 rounded-2xl ${isCurrentUser ? 'bg-purple-500 text-white rounded-br-none' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-bl-none'}`}>
-                {!isCurrentUser && <p className="text-xs font-bold text-purple-500 dark:text-purple-400 mb-1">{msg.name}</p>}
-                <p className="text-sm break-words">{msg.text}</p>
-                <p className={`text-xs mt-1 ${isCurrentUser ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'} ${isCurrentUser ? 'text-left' : 'text-right'}`}>{timeString}</p>
-              </div>
-              {isCurrentUser && <img src={msg.picture} alt={user?.name || 'User'} className="w-8 h-8 rounded-full" />}
+            <div key={msg.id} className={`group flex items-end gap-3 ${isCurrentUser ? 'justify-end flex-row-reverse' : 'justify-start'}`}>
+                <img src={isCurrentUser ? (user?.picture || '') : msg.picture} alt={isCurrentUser ? (user?.name || 'You') : msg.name} className="w-8 h-8 rounded-full" />
+                
+                <div className={`max-w-xs md:max-w-md p-3 rounded-2xl ${isCurrentUser ? 'bg-purple-500 text-white rounded-br-none' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-bl-none'}`}>
+                    {!isCurrentUser && <p className="text-xs font-bold text-purple-500 dark:text-purple-400 mb-1">{msg.name}</p>}
+                    <p className="text-sm break-words">{msg.text}</p>
+                    <p className={`text-xs mt-1 ${isCurrentUser ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'} ${isCurrentUser ? 'text-left' : 'text-right'}`}>{timeString}</p>
+                </div>
+                
+                {user?.isAdmin && <DeleteButton />}
             </div>
           );
         })}

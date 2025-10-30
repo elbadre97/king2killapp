@@ -41,6 +41,7 @@ export type User = {
   uid: string;
   name: string;
   picture: string; // URL to picture
+  isAdmin?: boolean;
 } | null;
 
 export interface AdState {
